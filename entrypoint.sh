@@ -13,6 +13,7 @@ else
     echo "$(date -Is): Status: $(curl \
         --connect-timeout $CURL_TIMEOUT \
         --max-time $CURL_MAXTIME \
+        -w " - %{http_code}" \
         -s $HEALTHCHECK_URL\
         )"
     sleep $HEALTHCHECK_FREQUENCY
