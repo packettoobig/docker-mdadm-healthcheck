@@ -10,7 +10,11 @@ else
     echo "Running scheduled healthcheck"
     while [ true ]
     do
-    echo "$(date -Is): Status: $(curl -s $HEALTHCHECK_URL)"
+    echo "$(date -Is): Status: $(curl \
+        --connect-timeout $CURL_TIMEOUT \
+        --max-time $CURL_MAXTIME \
+        -s $HEALTHCHECK_URL\
+        )"
     sleep $HEALTHCHECK_FREQUENCY
     done
 fi
