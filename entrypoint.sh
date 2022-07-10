@@ -1,5 +1,8 @@
 #!/bin/sh
 
+#Health of RAID array
+raid_status() { awk '/^md/ {printf "%s: ", $1}; /blocks/ {print $NF}'  /proc/mdstat | awk '/\[U+\]/ {print "\033[32m" $0 "\033[0m"}; /\[.*_.*\]/ {print "\033[31m" $0 "\033[0m"}'; }
+
 set -e
 
 if [ -z "$HEALTHCHECK_URL" ]
@@ -7,15 +10,32 @@ then
     echo "WARNING: HEALTHCHECK_URL is not defined, exiting"
     exit 1
 else
-    echo "Running scheduled healthcheck"
+    echo "Running scheduled mdadm healthcheck"
     while [ true ]
     do
-    echo "$(date -Is): Status: $(curl \
+    if grep -q '\[[^]]*_.*]' /mdstat
+    then
+            echo -n "RAID is failed: "
+            raid_status
+            curl \
+                --connect-timeout $CURL_TIMEOUT \
+                --max-time $CURL_MAXTIME \
+                -s $HEALTHCHECK_URL/fail
+    elif grep -q '\[[^]]*U.*]' /mdstat
+    then
+            echo -n "RAID is OK: "
+            raid_status
+            curl \
+                --connect-timeout $CURL_TIMEOUT \
+                --max-time $CURL_MAXTIME \
+                -s $HEALTHCHECK_URL
+    else
+            echo "Unable to match raid status"
+    fi
+    curl \
         --connect-timeout $CURL_TIMEOUT \
         --max-time $CURL_MAXTIME \
-        -w " - %{http_code}" \
         -s $HEALTHCHECK_URL\
-        )"
     sleep $HEALTHCHECK_FREQUENCY
     done
 fi

@@ -3,7 +3,7 @@
 # ./build_and_push.sh
 # VARS
 dailytag=$(date -I)
-imagename='pilbbq/healthcheck'
+imagename='pilbbq/mdadm-healthcheck'
 dailyimage="$imagename:$dailytag"
 latestimage="$imagename:latest"
 # SCRIPT
