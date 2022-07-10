@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #Health of RAID array
-raid_status() { awk '/^md/ {printf "%s: ", $1}; /blocks/ {print $NF}'  /proc/mdstat | awk '/\[U+\]/ {print "\033[32m" $0 "\033[0m"}; /\[.*_.*\]/ {print "\033[31m" $0 "\033[0m"}'; }
+raid_status() { awk '/^md/ {printf "%s: ", $1}; /blocks/ {print $NF}'  /mdstat | awk '/\[U+\]/ {print "\033[32m" $0 "\033[0m"}; /\[.*_.*\]/ {print "\033[31m" $0 "\033[0m"}'; }
 
 set -e
 
