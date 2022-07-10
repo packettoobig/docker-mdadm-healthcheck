@@ -21,7 +21,7 @@ else
                 --connect-timeout $CURL_TIMEOUT \
                 --max-time $CURL_MAXTIME \
                 --retry $CURL_RETRIES \
-                -s $HEALTHCHECK_URL/fail
+                -qs $HEALTHCHECK_URL/fail
     elif grep -q '\[[^]]*U.*]' /mdstat
     then
             echo -n "RAID is OK: "
@@ -30,7 +30,7 @@ else
                 --connect-timeout $CURL_TIMEOUT \
                 --max-time $CURL_MAXTIME \
                 --retry $CURL_RETRIES \
-                -s $HEALTHCHECK_URL
+                -qs $HEALTHCHECK_URL
     else
             echo "Unable to match raid status"
     fi
